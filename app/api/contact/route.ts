@@ -8,8 +8,8 @@ export async function POST(req: Request) {
 
   try {
     await resend.emails.send({
-      from: "ShadowLab <onboarding@resend.dev>",
-      to: ["your-email@gmail.com"], // CHANGE THIS
+      from: "ShadowLab <hello@shadowlab.online>",
+      to: ["hello@shadowlab.online"], 
       subject: "New Project Inquiry",
       html: `
         <h3>New Inquiry</h3>
