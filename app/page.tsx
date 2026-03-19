@@ -111,6 +111,61 @@ export default function Home() {
         </button>
       </section>
 
+{/* CONTACT */}
+<section className="py-20 px-4 border-t border-gray-800">
+  <div className="max-w-2xl mx-auto">
+    <h2 className="text-2xl md:text-4xl font-semibold text-center mb-10">
+      Start a Project
+    </h2>
+
+    <form
+      onSubmit={async (e) => {
+        e.preventDefault();
+        const form = e.target as HTMLFormElement;
+        const data = new FormData(form);
+
+        await fetch("/api/contact", {
+          method: "POST",
+          body: JSON.stringify({
+            name: data.get("name"),
+            email: data.get("email"),
+            message: data.get("message"),
+          }),
+        });
+
+        alert("Message sent!");
+        form.reset();
+      }}
+      className="flex flex-col gap-4"
+    >
+      <input
+        name="name"
+        placeholder="Your Name"
+        className="p-3 bg-black border border-gray-700 rounded"
+        required
+      />
+      <input
+        name="email"
+        type="email"
+        placeholder="Your Email"
+        className="p-3 bg-black border border-gray-700 rounded"
+        required
+      />
+      <textarea
+        name="message"
+        placeholder="Tell me about your project..."
+        className="p-3 bg-black border border-gray-700 rounded"
+        rows={5}
+        required
+      />
+      <button className="bg-white text-black py-3 rounded font-medium">
+        Send Message
+      </button>
+    </form>
+  </div>
+</section>
+
+
     </main>
   );
 }
