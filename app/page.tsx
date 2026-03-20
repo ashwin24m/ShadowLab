@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useState } from "react";
 
 export default function Home() {
   return (
@@ -111,33 +112,55 @@ export default function Home() {
         </button>
       </section>
 
-{/* CONTACT */}
-<section className="py-20 px-4 border-t border-gray-800">
-  <div className="max-w-2xl mx-auto">
-    <h2 className="text-2xl md:text-4xl font-semibold text-center mb-10">
-      Start a Project
-    </h2>
+      {/* CONTACT */}
+      <section className="py-20 px-4 border-t border-gray-800">
+        <div className="max-w-2xl mx-auto">
+          <h2 className="text-2xl md:text-4xl font-semibold text-center mb-10">
+            Start a Project
+          </h2>
 
-    <form
-      onSubmit={async (e) => {
-        e.preventDefault();
-        const form = e.target as HTMLFormElement;
-        const data = new FormData(form);
+          <ContactForm />
+        </div>
+      </section>
 
-        await fetch("/api/contact", {
-          method: "POST",
-          body: JSON.stringify({
-            name: data.get("name"),
-            email: data.get("email"),
-            message: data.get("message"),
-          }),
-        });
+    </main>
+  );
+}
 
-        alert("Message sent!");
-        form.reset();
-      }}
-      className="flex flex-col gap-4"
-    >
+/* CONTACT COMPONENT */
+function ContactForm() {
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(e: any) {
+    e.preventDefault();
+    setLoading(true);
+
+    const form = e.target;
+    const data = new FormData(form);
+
+    const res = await fetch("/api/contact", {
+      method: "POST",
+      body: JSON.stringify({
+        name: data.get("name"),
+        email: data.get("email"),
+        message: data.get("message"),
+      }),
+    });
+
+    const result = await res.json();
+
+    if (result.success) {
+      alert("✅ Message sent successfully!");
+      form.reset();
+    } else {
+      alert("❌ Failed to send message");
+    }
+
+    setLoading(false);
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <input
         name="name"
         placeholder="Your Name"
@@ -158,14 +181,13 @@ export default function Home() {
         rows={5}
         required
       />
-      <button className="bg-white text-black py-3 rounded font-medium">
-        Send Message
+      <button
+        type="submit"
+        disabled={loading}
+        className="bg-white text-black py-3 rounded font-medium"
+      >
+        {loading ? "Sending..." : "Send Message"}
       </button>
     </form>
-  </div>
-</section>
-
-
-    </main>
   );
 }
