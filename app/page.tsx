@@ -77,7 +77,7 @@ export default function Home() {
             </div>
 
             <div className="p-6 border border-gray-800 rounded-xl">
-              <h3 className="text-lg font-semibold">Sahayak AI</h3>
+              <h3 className="text-lg font-semibold">Arivu AI</h3>
               <p className="text-gray-400 mt-2">
                 Custom AI assistant system for automation.
               </p>
