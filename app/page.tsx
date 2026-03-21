@@ -3,7 +3,15 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
+/* TEMP FIX FOR LENIS TYPES */
 
+export default function Home() {
+  const container = useRef<HTMLDivElement | null>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: container,
+    offset: ["start start", "end end"],
+  });
 
   const scaleHero = useTransform(scrollYProgress, [0, 0.3], [1, 0.92]);
   const opacityHero = useTransform(scrollYProgress, [0, 0.25], [1, 0.4]);
@@ -11,20 +19,7 @@ import { useEffect, useRef, useState } from "react";
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
 
   /* SMOOTH SCROLL */
-  useEffect(() => {
-    const lenis = new Lenis({ lerp: 0.08 });
 
-    function raf(time: number) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-
-    requestAnimationFrame(raf);
-
-    return () => {
-      lenis.destroy();
-    };
-  }, []);
 
   return (
     <main
