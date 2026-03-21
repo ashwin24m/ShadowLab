@@ -118,9 +118,9 @@ export default function Home() {
                   Visit Product
                 </a>
 
-                <span className="text-sm text-gray-500">
-                  Case study coming soon
-                </span>
+              <a href="/work/arivu" className="text-sm text-gray-400 hover:text-white">
+  View Case Study
+</a>
               </div>
             </div>
 
