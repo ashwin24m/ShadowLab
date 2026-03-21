@@ -2,10 +2,13 @@
 
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import Lenis from "lenis";
+
+/* TEMP FIX FOR LENIS TYPES */
+const Lenis = require("lenis");
 
 export default function Home() {
-  const container = useRef(null);
+  const container = useRef<HTMLDivElement | null>(null);
+
   const { scrollYProgress } = useScroll({
     target: container,
     offset: ["start start", "end end"],
@@ -18,13 +21,18 @@ export default function Home() {
 
   /* SMOOTH SCROLL */
   useEffect(() => {
-    const lenis = new Lenis({ smooth: true, lerp: 0.08 });
+    const lenis = new Lenis({ lerp: 0.08 });
 
-    function raf(time: any) {
+    function raf(time: number) {
       lenis.raf(time);
       requestAnimationFrame(raf);
     }
+
     requestAnimationFrame(raf);
+
+    return () => {
+      lenis.destroy();
+    };
   }, []);
 
   return (
@@ -33,7 +41,6 @@ export default function Home() {
       onMouseMove={(e) => setMouse({ x: e.clientX, y: e.clientY })}
       className="bg-[#0a0a0a] text-white"
     >
-
       {/* CURSOR LIGHT */}
       <div
         className="fixed inset-0 pointer-events-none z-0"
@@ -53,7 +60,7 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* HERO (STORY START) */}
+      {/* HERO */}
       <motion.section
         style={{ scale: scaleHero, opacity: opacityHero }}
         className="pt-44 pb-32 px-6 text-center"
@@ -71,10 +78,9 @@ export default function Home() {
         </div>
       </motion.section>
 
-      {/* TRANSITION SPACER */}
       <div className="h-32" />
 
-      {/* WORK (SCENE 2) */}
+      {/* WORK */}
       <motion.section
         id="work"
         initial={{ opacity: 0, y: 80 }}
@@ -83,7 +89,6 @@ export default function Home() {
         className="py-24 px-6 border-t border-white/10"
       >
         <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-8">
-
           <TiltCard
             title="PhotoBox"
             desc="Event photo sharing system across devices."
@@ -97,14 +102,12 @@ export default function Home() {
             link="/work/arivu"
             live="https://arivu.shadowlab.online"
           />
-
         </div>
       </motion.section>
 
-      {/* TRANSITION */}
       <div className="h-32" />
 
-      {/* CONTACT (FINAL SCENE) */}
+      {/* CONTACT */}
       <motion.section
         id="contact"
         initial={{ opacity: 0, scale: 0.95 }}
@@ -126,19 +129,21 @@ export default function Home() {
       >
         Chat
       </a>
-
     </main>
   );
 }
 
 /* MAGNETIC BUTTON */
-function MagneticButton({ text }: any) {
-  const ref = useRef<any>();
+function MagneticButton({ text }: { text: string }) {
+  const ref = useRef<HTMLButtonElement | null>(null);
 
-  function move(e: any) {
+  function move(e: React.MouseEvent<HTMLButtonElement>) {
+    if (!ref.current) return;
+
     const rect = ref.current.getBoundingClientRect();
     const x = e.clientX - rect.left - rect.width / 2;
     const y = e.clientY - rect.top - rect.height / 2;
+
     ref.current.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
   }
 
@@ -146,7 +151,9 @@ function MagneticButton({ text }: any) {
     <button
       ref={ref}
       onMouseMove={move}
-      onMouseLeave={() => (ref.current.style.transform = "translate(0,0)")}
+      onMouseLeave={() => {
+        if (ref.current) ref.current.style.transform = "translate(0,0)";
+      }}
       className="bg-white text-black px-6 py-3 rounded-lg transition active:scale-95"
     >
       {text}
@@ -155,7 +162,17 @@ function MagneticButton({ text }: any) {
 }
 
 /* 3D CARD */
-function TiltCard({ title, desc, link, live }: any) {
+function TiltCard({
+  title,
+  desc,
+  link,
+  live,
+}: {
+  title: string;
+  desc: string;
+  link: string;
+  live: string;
+}) {
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
 
   return (
@@ -180,8 +197,12 @@ function TiltCard({ title, desc, link, live }: any) {
       <p className="text-gray-400 mt-2 text-sm">{desc}</p>
 
       <div className="mt-4 flex gap-4 text-sm">
-        <a href={link} className="underline">Case Study</a>
-        <a href={live} target="_blank">Live →</a>
+        <a href={link} className="underline">
+          Case Study
+        </a>
+        <a href={live} target="_blank">
+          Live →
+        </a>
       </div>
     </div>
   );
@@ -191,11 +212,11 @@ function TiltCard({ title, desc, link, live }: any) {
 function ContactForm() {
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e: any) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
 
-    const form = e.target;
+    const form = e.currentTarget;
     const data = new FormData(form);
 
     await fetch("/api/contact", {
@@ -213,7 +234,10 @@ function ContactForm() {
   }
 
   return (
-    <form className="flex flex-col gap-4 max-w-md mx-auto" onSubmit={handleSubmit}>
+    <form
+      className="flex flex-col gap-4 max-w-md mx-auto"
+      onSubmit={handleSubmit}
+    >
       <input name="name" placeholder="Name" className="p-3 bg-black border border-white/10 rounded" required />
       <input name="email" type="email" placeholder="Email" className="p-3 bg-black border border-white/10 rounded" required />
       <textarea name="message" placeholder="Project details..." className="p-3 bg-black border border-white/10 rounded" required />
