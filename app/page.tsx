@@ -1,15 +1,15 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function Home() {
   return (
-    <main className="bg-[#0a0a0a] text-white min-h-screen scroll-smooth">
+    <main className="bg-[#0a0a0a] text-white min-h-screen">
 
       {/* NAVBAR */}
-      <nav className="fixed w-full z-50 bg-black/60 backdrop-blur border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <nav className="fixed w-full z-50 bg-black/70 backdrop-blur border-b border-white/10">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
           <h1 className="font-semibold tracking-wide">ShadowLab</h1>
           <div className="hidden md:flex gap-8 text-sm text-gray-400">
             <a href="#work" className="hover:text-white">Work</a>
@@ -21,171 +21,135 @@ export default function Home() {
       </nav>
 
       {/* HERO */}
-      <section className="pt-36 pb-24 px-6">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+      <section className="pt-40 pb-28 px-6 text-center">
+        <div className="max-w-3xl mx-auto">
 
-          <div>
-            <motion.h1
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-4xl md:text-6xl font-semibold leading-tight"
-            >
-              We Build Systems <br />
-              That Solve Real Problems
-            </motion.h1>
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-4xl md:text-6xl font-semibold leading-tight"
+          >
+            We build systems that <br /> solve real problems
+          </motion.h1>
 
-            <p className="mt-6 text-gray-400 max-w-lg">
-              ShadowLab builds SaaS platforms and AI systems focused on real-world usability —
-              not just demos.
-            </p>
+          <p className="mt-6 text-gray-400">
+            SaaS products, AI tools, and automation systems designed for real-world usage — not demos.
+          </p>
 
-            <div className="mt-8 flex gap-4">
-              <a href="#contact" className="bg-white text-black px-6 py-3 rounded-lg">
-                Start Project
-              </a>
-              <a href="#work" className="border border-white/20 px-6 py-3 rounded-lg">
-                View Work
-              </a>
-            </div>
+          <div className="mt-8 flex justify-center gap-4">
+            <a href="#contact" className="bg-white text-black px-6 py-3 rounded-lg">
+              Start Project
+            </a>
+            <a href="#work" className="border border-white/20 px-6 py-3 rounded-lg">
+              View Work
+            </a>
           </div>
-
-          <InteractivePanel />
 
         </div>
       </section>
 
-      {/* WORK (UPDATED WITH REAL POSITIONING) */}
-      <section id="work" className="py-20 px-6 border-t border-white/10">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-semibold mb-12">Products & Systems</h2>
+      {/* POSITIONING */}
+      <section className="pb-20 px-6 text-center">
+        <p className="text-gray-500 text-sm max-w-2xl mx-auto">
+          Focused on building scalable systems for automation, efficiency, and real impact.
+        </p>
+      </section>
 
-          <div className="grid md:grid-cols-2 gap-6">
+      {/* WORK */}
+      <section id="work" className="py-20 px-6 border-t border-white/10">
+        <div className="max-w-5xl mx-auto">
+
+          <h2 className="text-2xl font-semibold mb-12">Selected Work</h2>
+
+          <div className="space-y-6">
 
             {/* PHOTOBOX */}
             <div className="p-6 border border-white/10 rounded-xl hover:border-white/30 transition">
-              <h3 className="text-xl font-semibold">PhotoBox</h3>
+              <h3 className="text-lg font-semibold">PhotoBox</h3>
 
-              <p className="text-gray-400 mt-3 text-sm">
-                Event-based photo sharing system that solves the problem of distributing
-                photos across different devices, platforms, and formats.
+              <p className="text-gray-400 mt-2 text-sm">
+                Event photo sharing system that enables seamless access across devices and eliminates platform dependency.
               </p>
 
-              <ul className="text-gray-400 text-sm mt-4 space-y-1">
-                <li>• Centralized photo access for events</li>
-                <li>• Works across devices & platforms</li>
-                <li>• Eliminates manual sharing via WhatsApp/Drive</li>
-              </ul>
-
-              <div className="mt-6 flex gap-4">
-                <a
-                  href="https://photobox.shadowlab.online"
-                  target="_blank"
-                  className="text-sm underline"
-                >
-                  Visit Product
-                </a>
-
-                <a
-                  href="/work/photobox"
-                  className="text-sm text-gray-400 hover:text-white"
-                >
-                  View Case Study
+              <div className="mt-4 flex gap-4 text-sm">
+                <a href="/work/photobox" className="underline">Case Study</a>
+                <a href="https://photobox.shadowlab.online" target="_blank" className="text-gray-400">
+                  Live Product
                 </a>
               </div>
             </div>
 
-            {/* ARIVU AI */}
+            {/* ARIVU */}
             <div className="p-6 border border-white/10 rounded-xl hover:border-white/30 transition">
-              <h3 className="text-xl font-semibold">Arivu AI</h3>
+              <h3 className="text-lg font-semibold">Arivu AI</h3>
 
-              <p className="text-gray-400 mt-3 text-sm">
-                AI learning assistant designed for students who struggle with prompts.
-                Provides structured answers based on academic level.
+              <p className="text-gray-400 mt-2 text-sm">
+                AI learning assistant that provides structured answers for students based on their academic level.
               </p>
 
-              <ul className="text-gray-400 text-sm mt-4 space-y-1">
-                <li>• Curriculum-based AI responses</li>
-                <li>• Designed for school → college levels</li>
-                <li>• Eliminates confusion in AI usage</li>
-              </ul>
-
-              <div className="mt-6 flex gap-4">
-                <a
-                  href="https://arivu.shadowlab.online"
-                  target="_blank"
-                  className="text-sm underline"
-                >
-                  Visit Product
+              <div className="mt-4 flex gap-4 text-sm">
+                <a href="/work/arivu" className="underline">Case Study</a>
+                <a href="https://arivu.shadowlab.online" target="_blank" className="text-gray-400">
+                  Live Product
                 </a>
-
-              <a href="/work/arivu" className="text-sm text-gray-400 hover:text-white">
-  View Case Study
-</a>
               </div>
             </div>
 
           </div>
+
         </div>
       </section>
 
       {/* SERVICES */}
       <section id="services" className="py-20 px-6 border-t border-white/10">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-semibold mb-12">Services</h2>
+        <div className="max-w-5xl mx-auto">
 
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              "SaaS Development",
-              "AI Automation",
-              "Custom Internal Tools"
-            ].map((s) => (
-              <div key={s} className="p-6 border border-white/10 rounded-xl">
-                {s}
-              </div>
-            ))}
+          <h2 className="text-2xl font-semibold mb-12">Services</h2>
+
+          <div className="grid md:grid-cols-3 gap-6 text-sm text-gray-400">
+            <div>SaaS Development</div>
+            <div>AI Automation</div>
+            <div>Internal Tools</div>
           </div>
+
         </div>
       </section>
 
       {/* PRICING */}
       <section id="pricing" className="py-20 px-6 border-t border-white/10">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-semibold mb-12">Pricing</h2>
+        <div className="max-w-5xl mx-auto">
+
+          <h2 className="text-2xl font-semibold mb-12">Pricing</h2>
 
           <div className="grid md:grid-cols-3 gap-6">
 
             <div className="p-6 border border-white/10 rounded-xl">
-              <h3>Starter</h3>
-              <p className="text-2xl mt-2">₹25K+</p>
-              <p className="text-gray-400 text-sm mt-2">
-                MVPs and small tools
-              </p>
+              <p className="font-medium">Starter</p>
+              <p className="text-xl mt-2">₹25K+</p>
+              <p className="text-gray-400 text-sm mt-2">MVPs & simple tools</p>
             </div>
 
             <div className="p-6 border border-white/10 rounded-xl">
-              <h3>Growth</h3>
-              <p className="text-2xl mt-2">₹50K–₹1L</p>
-              <p className="text-gray-400 text-sm mt-2">
-                Full SaaS / automation systems
-              </p>
+              <p className="font-medium">Growth</p>
+              <p className="text-xl mt-2">₹50K–₹1L</p>
+              <p className="text-gray-400 text-sm mt-2">Full SaaS & automation</p>
             </div>
 
             <div className="p-6 border border-white/10 rounded-xl">
-              <h3>Advanced</h3>
-              <p className="text-2xl mt-2">₹1L+</p>
-              <p className="text-gray-400 text-sm mt-2">
-                Complex AI platforms
-              </p>
+              <p className="font-medium">Advanced</p>
+              <p className="text-xl mt-2">₹1L+</p>
+              <p className="text-gray-400 text-sm mt-2">Complex AI systems</p>
             </div>
 
           </div>
+
         </div>
       </section>
 
       {/* CONTACT */}
       <section id="contact" className="py-20 px-6 border-t border-white/10 text-center">
-        <h2 className="text-3xl font-semibold mb-6">
-          Let’s Build Something Useful
+        <h2 className="text-2xl font-semibold mb-6">
+          Let’s build something useful
         </h2>
 
         <ContactForm />
@@ -200,34 +164,6 @@ export default function Home() {
       </a>
 
     </main>
-  );
-}
-
-/* INTERACTIVE PANEL */
-function InteractivePanel() {
-  const steps = [
-    "Understanding problem...",
-    "Designing solution...",
-    "Building system...",
-    "Delivering output..."
-  ];
-
-  const [i, setI] = useState(0);
-
-  useEffect(() => {
-    const t = setInterval(() => {
-      setI((prev) => (prev + 1) % steps.length);
-    }, 1500);
-    return () => clearInterval(t);
-  }, []);
-
-  return (
-    <div className="border border-white/10 rounded-xl p-6 bg-white/5 max-w-md">
-      <p className="text-sm text-gray-400 mb-4">System Simulation</p>
-      <div className="h-32 flex items-center justify-center text-gray-300">
-        {steps[i]}
-      </div>
-    </div>
   );
 }
 
