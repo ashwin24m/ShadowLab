@@ -1,8 +1,8 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import Lenis from "lenis";
+import Lenis from "@studio-freight/lenis";
 
 export default function Home() {
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
@@ -10,16 +10,21 @@ export default function Home() {
   /* SMOOTH SCROLL */
   useEffect(() => {
     const lenis = new Lenis({
-      smooth: true,
       lerp: 0.08,
+      wheelMultiplier: 1,
+      touchMultiplier: 1.2,
     });
 
-    function raf(time: any) {
+    function raf(time: number) {
       lenis.raf(time);
       requestAnimationFrame(raf);
     }
 
     requestAnimationFrame(raf);
+
+    return () => {
+      lenis.destroy();
+    };
   }, []);
 
   return (
@@ -64,7 +69,10 @@ export default function Home() {
         <Reveal delay={0.4}>
           <div className="mt-8 flex justify-center gap-4">
             <MagneticButton text="Start Project" />
-            <a href="#work" className="border border-white/20 px-6 py-3 rounded-lg">
+            <a
+              href="#work"
+              className="border border-white/20 px-6 py-3 rounded-lg hover:bg-white hover:text-black transition"
+            >
               View Work
             </a>
           </div>
@@ -77,14 +85,14 @@ export default function Home() {
 
           <TiltCard
             title="PhotoBox"
-            desc="Event photo sharing system"
+            desc="Event photo sharing system across devices and platforms."
             link="/work/photobox"
             live="https://photobox.shadowlab.online"
           />
 
           <TiltCard
             title="Arivu AI"
-            desc="AI assistant for students"
+            desc="AI assistant designed for structured learning based on student level."
             link="/work/arivu"
             live="https://arivu.shadowlab.online"
           />
@@ -103,10 +111,10 @@ export default function Home() {
         <ContactForm />
       </section>
 
-      {/* FLOAT */}
+      {/* FLOAT BUTTON */}
       <a
         href="https://wa.me/917483698042"
-        className="fixed bottom-6 right-6 bg-white text-black px-5 py-3 rounded-full shadow-lg active:scale-90 transition"
+        className="fixed bottom-6 right-6 bg-white text-black px-5 py-3 rounded-full shadow-lg active:scale-90 transition hover:scale-110"
       >
         Chat
       </a>
@@ -115,7 +123,7 @@ export default function Home() {
   );
 }
 
-/* REVEAL ANIMATION */
+/* REVEAL */
 function Reveal({ children, delay = 0 }: any) {
   return (
     <motion.div
@@ -130,10 +138,12 @@ function Reveal({ children, delay = 0 }: any) {
 }
 
 /* MAGNETIC BUTTON */
-function MagneticButton({ text }: any) {
-  const ref = useRef<any>();
+function MagneticButton({ text }: { text: string }) {
+  const ref = useRef<HTMLButtonElement | null>(null);
 
-  function handleMove(e: any) {
+  function handleMove(e: React.MouseEvent<HTMLButtonElement>) {
+    if (!ref.current) return;
+
     const rect = ref.current.getBoundingClientRect();
     const x = e.clientX - rect.left - rect.width / 2;
     const y = e.clientY - rect.top - rect.height / 2;
@@ -142,6 +152,7 @@ function MagneticButton({ text }: any) {
   }
 
   function reset() {
+    if (!ref.current) return;
     ref.current.style.transform = `translate(0px, 0px)`;
   }
 
@@ -150,7 +161,7 @@ function MagneticButton({ text }: any) {
       ref={ref}
       onMouseMove={handleMove}
       onMouseLeave={reset}
-      className="bg-white text-black px-6 py-3 rounded-lg transition active:scale-95"
+      className="bg-white text-black px-6 py-3 rounded-lg transition active:scale-95 hover:scale-105"
     >
       {text}
     </button>
@@ -158,7 +169,17 @@ function MagneticButton({ text }: any) {
 }
 
 /* 3D CARD */
-function TiltCard({ title, desc, link, live }: any) {
+function TiltCard({
+  title,
+  desc,
+  link,
+  live,
+}: {
+  title: string;
+  desc: string;
+  link: string;
+  live: string;
+}) {
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
 
   return (
@@ -177,28 +198,32 @@ function TiltCard({ title, desc, link, live }: any) {
       style={{
         transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
       }}
-      className="p-6 rounded-xl border border-white/10 bg-white/[0.03] hover:border-white/30 transition active:scale-95"
+      className="p-6 rounded-xl border border-white/10 bg-white/[0.03] hover:border-white/30 transition active:scale-95 hover:scale-[1.02]"
     >
-      <h3 className="font-semibold">{title}</h3>
+      <h3 className="font-semibold text-lg">{title}</h3>
       <p className="text-gray-400 mt-2 text-sm">{desc}</p>
 
       <div className="mt-4 flex gap-4 text-sm">
-        <a href={link} className="underline">Case Study</a>
-        <a href={live} target="_blank">Live →</a>
+        <a href={link} className="underline">
+          Case Study
+        </a>
+        <a href={live} target="_blank">
+          Live →
+        </a>
       </div>
     </div>
   );
 }
 
-/* FORM */
+/* CONTACT FORM */
 function ContactForm() {
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e: any) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
 
-    const form = e.target;
+    const form = e.currentTarget;
     const data = new FormData(form);
 
     await fetch("/api/contact", {
@@ -216,11 +241,30 @@ function ContactForm() {
   }
 
   return (
-    <form className="flex flex-col gap-4 max-w-md mx-auto" onSubmit={handleSubmit}>
-      <input name="name" placeholder="Name" className="p-3 bg-black border border-white/10 rounded" required />
-      <input name="email" type="email" placeholder="Email" className="p-3 bg-black border border-white/10 rounded" required />
-      <textarea name="message" placeholder="Project details..." className="p-3 bg-black border border-white/10 rounded" required />
-      <button className="bg-white text-black py-3 rounded active:scale-95">
+    <form
+      className="flex flex-col gap-4 max-w-md mx-auto"
+      onSubmit={handleSubmit}
+    >
+      <input
+        name="name"
+        placeholder="Name"
+        className="p-3 bg-black border border-white/10 rounded"
+        required
+      />
+      <input
+        name="email"
+        type="email"
+        placeholder="Email"
+        className="p-3 bg-black border border-white/10 rounded"
+        required
+      />
+      <textarea
+        name="message"
+        placeholder="Project details..."
+        className="p-3 bg-black border border-white/10 rounded"
+        required
+      />
+      <button className="bg-white text-black py-3 rounded active:scale-95 hover:scale-105">
         {loading ? "Sending..." : "Send"}
       </button>
     </form>
