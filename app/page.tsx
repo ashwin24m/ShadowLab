@@ -1,36 +1,37 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import Lenis from "@studio-freight/lenis";
+import Lenis from "lenis";
 
 export default function Home() {
+  const container = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: container,
+    offset: ["start start", "end end"],
+  });
+
+  const scaleHero = useTransform(scrollYProgress, [0, 0.3], [1, 0.92]);
+  const opacityHero = useTransform(scrollYProgress, [0, 0.25], [1, 0.4]);
+
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
 
   /* SMOOTH SCROLL */
   useEffect(() => {
-    const lenis = new Lenis({
-      lerp: 0.08,
-      wheelMultiplier: 1,
-      touchMultiplier: 1.2,
-    });
+    const lenis = new Lenis({ smooth: true, lerp: 0.08 });
 
-    function raf(time: number) {
+    function raf(time: any) {
       lenis.raf(time);
       requestAnimationFrame(raf);
     }
-
     requestAnimationFrame(raf);
-
-    return () => {
-      lenis.destroy();
-    };
   }, []);
 
   return (
     <main
+      ref={container}
       onMouseMove={(e) => setMouse({ x: e.clientX, y: e.clientY })}
-      className="bg-[#0a0a0a] text-white min-h-screen"
+      className="bg-[#0a0a0a] text-white"
     >
 
       {/* CURSOR LIGHT */}
@@ -52,69 +53,76 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* HERO */}
-      <section className="pt-44 pb-32 px-6 text-center">
-        <Reveal>
-          <h1 className="text-4xl md:text-6xl font-semibold">
-            Systems that feel alive
-          </h1>
-        </Reveal>
+      {/* HERO (STORY START) */}
+      <motion.section
+        style={{ scale: scaleHero, opacity: opacityHero }}
+        className="pt-44 pb-32 px-6 text-center"
+      >
+        <h1 className="text-4xl md:text-6xl font-semibold">
+          Systems that feel alive
+        </h1>
 
-        <Reveal delay={0.2}>
-          <p className="mt-6 text-gray-400">
-            Every interaction should respond, not just exist.
-          </p>
-        </Reveal>
+        <p className="mt-6 text-gray-400">
+          Not just built — designed to respond.
+        </p>
 
-        <Reveal delay={0.4}>
-          <div className="mt-8 flex justify-center gap-4">
-            <MagneticButton text="Start Project" />
-            <a
-              href="#work"
-              className="border border-white/20 px-6 py-3 rounded-lg hover:bg-white hover:text-black transition"
-            >
-              View Work
-            </a>
-          </div>
-        </Reveal>
-      </section>
+        <div className="mt-8 flex justify-center gap-4">
+          <MagneticButton text="Start Project" />
+        </div>
+      </motion.section>
 
-      {/* WORK */}
-      <section id="work" className="py-24 px-6 border-t border-white/10">
+      {/* TRANSITION SPACER */}
+      <div className="h-32" />
+
+      {/* WORK (SCENE 2) */}
+      <motion.section
+        id="work"
+        initial={{ opacity: 0, y: 80 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="py-24 px-6 border-t border-white/10"
+      >
         <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-8">
 
           <TiltCard
             title="PhotoBox"
-            desc="Event photo sharing system across devices and platforms."
+            desc="Event photo sharing system across devices."
             link="/work/photobox"
             live="https://photobox.shadowlab.online"
           />
 
           <TiltCard
             title="Arivu AI"
-            desc="AI assistant designed for structured learning based on student level."
+            desc="AI assistant for structured student learning."
             link="/work/arivu"
             live="https://arivu.shadowlab.online"
           />
 
         </div>
-      </section>
+      </motion.section>
 
-      {/* CONTACT */}
-      <section id="contact" className="py-24 px-6 border-t border-white/10 text-center">
-        <Reveal>
-          <h2 className="text-2xl font-semibold mb-6">
-            Let’s build something useful
-          </h2>
-        </Reveal>
+      {/* TRANSITION */}
+      <div className="h-32" />
+
+      {/* CONTACT (FINAL SCENE) */}
+      <motion.section
+        id="contact"
+        initial={{ opacity: 0, scale: 0.95 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.8 }}
+        className="py-24 px-6 border-t border-white/10 text-center"
+      >
+        <h2 className="text-2xl font-semibold mb-6">
+          Let’s build something useful
+        </h2>
 
         <ContactForm />
-      </section>
+      </motion.section>
 
-      {/* FLOAT BUTTON */}
+      {/* FLOAT */}
       <a
         href="https://wa.me/917483698042"
-        className="fixed bottom-6 right-6 bg-white text-black px-5 py-3 rounded-full shadow-lg active:scale-90 transition hover:scale-110"
+        className="fixed bottom-6 right-6 bg-white text-black px-5 py-3 rounded-full shadow-lg active:scale-90 transition"
       >
         Chat
       </a>
@@ -123,45 +131,23 @@ export default function Home() {
   );
 }
 
-/* REVEAL */
-function Reveal({ children, delay = 0 }: any) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 40, filter: "blur(10px)" }}
-      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-      transition={{ duration: 0.6, delay }}
-      viewport={{ once: true }}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
 /* MAGNETIC BUTTON */
-function MagneticButton({ text }: { text: string }) {
-  const ref = useRef<HTMLButtonElement | null>(null);
+function MagneticButton({ text }: any) {
+  const ref = useRef<any>();
 
-  function handleMove(e: React.MouseEvent<HTMLButtonElement>) {
-    if (!ref.current) return;
-
+  function move(e: any) {
     const rect = ref.current.getBoundingClientRect();
     const x = e.clientX - rect.left - rect.width / 2;
     const y = e.clientY - rect.top - rect.height / 2;
-
     ref.current.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
-  }
-
-  function reset() {
-    if (!ref.current) return;
-    ref.current.style.transform = `translate(0px, 0px)`;
   }
 
   return (
     <button
       ref={ref}
-      onMouseMove={handleMove}
-      onMouseLeave={reset}
-      className="bg-white text-black px-6 py-3 rounded-lg transition active:scale-95 hover:scale-105"
+      onMouseMove={move}
+      onMouseLeave={() => (ref.current.style.transform = "translate(0,0)")}
+      className="bg-white text-black px-6 py-3 rounded-lg transition active:scale-95"
     >
       {text}
     </button>
@@ -169,17 +155,7 @@ function MagneticButton({ text }: { text: string }) {
 }
 
 /* 3D CARD */
-function TiltCard({
-  title,
-  desc,
-  link,
-  live,
-}: {
-  title: string;
-  desc: string;
-  link: string;
-  live: string;
-}) {
+function TiltCard({ title, desc, link, live }: any) {
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
 
   return (
@@ -198,32 +174,28 @@ function TiltCard({
       style={{
         transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
       }}
-      className="p-6 rounded-xl border border-white/10 bg-white/[0.03] hover:border-white/30 transition active:scale-95 hover:scale-[1.02]"
+      className="p-6 rounded-xl border border-white/10 bg-white/[0.03] hover:border-white/30 transition active:scale-95"
     >
-      <h3 className="font-semibold text-lg">{title}</h3>
+      <h3 className="font-semibold">{title}</h3>
       <p className="text-gray-400 mt-2 text-sm">{desc}</p>
 
       <div className="mt-4 flex gap-4 text-sm">
-        <a href={link} className="underline">
-          Case Study
-        </a>
-        <a href={live} target="_blank">
-          Live →
-        </a>
+        <a href={link} className="underline">Case Study</a>
+        <a href={live} target="_blank">Live →</a>
       </div>
     </div>
   );
 }
 
-/* CONTACT FORM */
+/* FORM */
 function ContactForm() {
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: any) {
     e.preventDefault();
     setLoading(true);
 
-    const form = e.currentTarget;
+    const form = e.target;
     const data = new FormData(form);
 
     await fetch("/api/contact", {
@@ -241,30 +213,11 @@ function ContactForm() {
   }
 
   return (
-    <form
-      className="flex flex-col gap-4 max-w-md mx-auto"
-      onSubmit={handleSubmit}
-    >
-      <input
-        name="name"
-        placeholder="Name"
-        className="p-3 bg-black border border-white/10 rounded"
-        required
-      />
-      <input
-        name="email"
-        type="email"
-        placeholder="Email"
-        className="p-3 bg-black border border-white/10 rounded"
-        required
-      />
-      <textarea
-        name="message"
-        placeholder="Project details..."
-        className="p-3 bg-black border border-white/10 rounded"
-        required
-      />
-      <button className="bg-white text-black py-3 rounded active:scale-95 hover:scale-105">
+    <form className="flex flex-col gap-4 max-w-md mx-auto" onSubmit={handleSubmit}>
+      <input name="name" placeholder="Name" className="p-3 bg-black border border-white/10 rounded" required />
+      <input name="email" type="email" placeholder="Email" className="p-3 bg-black border border-white/10 rounded" required />
+      <textarea name="message" placeholder="Project details..." className="p-3 bg-black border border-white/10 rounded" required />
+      <button className="bg-white text-black py-3 rounded active:scale-95">
         {loading ? "Sending..." : "Send"}
       </button>
     </form>
