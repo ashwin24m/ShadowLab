@@ -1,12 +1,10 @@
 "use client";
 
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
-
-/* TEMP FIX FOR LENIS TYPES */
+import { useRef, useState } from "react";
 
 export default function Home() {
-  const container = useRef<HTMLDivElement | null>(null);
+  const container = useRef(null);
 
   const { scrollYProgress } = useScroll({
     target: container,
@@ -14,35 +12,30 @@ export default function Home() {
   });
 
   const scaleHero = useTransform(scrollYProgress, [0, 0.3], [1, 0.92]);
-  const opacityHero = useTransform(scrollYProgress, [0, 0.25], [1, 0.4]);
+  const opacityHero = useTransform(scrollYProgress, [0, 0.25], [1, 0.5]);
 
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
-
-  /* SMOOTH SCROLL */
-
 
   return (
     <main
       ref={container}
       onMouseMove={(e) => setMouse({ x: e.clientX, y: e.clientY })}
-      className="bg-[#0a0a0a] text-white"
+      className="bg-[#0b0b0c] text-[#e6e6e6] min-h-screen font-[var(--font-inter)]"
     >
       {/* CURSOR LIGHT */}
       <div
         className="fixed inset-0 pointer-events-none z-0"
         style={{
-          background: `radial-gradient(600px at ${mouse.x}px ${mouse.y}px, rgba(255,255,255,0.06), transparent 80%)`,
+          background: `radial-gradient(600px at ${mouse.x}px ${mouse.y}px, rgba(255,255,255,0.05), transparent 80%)`,
         }}
       />
 
       {/* NAVBAR */}
-      <nav className="fixed w-full z-50 bg-black/60 backdrop-blur border-b border-white/10">
+      <nav className="fixed w-full z-50 bg-[#0b0b0c]/70 backdrop-blur border-b border-white/5">
         <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between">
-          <h1>ShadowLab</h1>
-          <div className="hidden md:flex gap-8 text-sm text-gray-400">
-            <a href="#work">Work</a>
-            <a href="#contact">Contact</a>
-          </div>
+          <h1 className="font-[var(--font-space)] tracking-wide text-white/90">
+            ShadowLab
+          </h1>
         </div>
       </nav>
 
@@ -51,12 +44,12 @@ export default function Home() {
         style={{ scale: scaleHero, opacity: opacityHero }}
         className="pt-44 pb-32 px-6 text-center"
       >
-        <h1 className="text-4xl md:text-6xl font-semibold">
+        <h1 className="text-4xl md:text-6xl font-[var(--font-space)] leading-tight text-white/90">
           Systems that feel alive
         </h1>
 
-        <p className="mt-6 text-gray-400">
-          Not just built — designed to respond.
+        <p className="mt-6 text-white/40">
+          Designed to respond. Built to scale.
         </p>
 
         <div className="mt-8 flex justify-center gap-4">
@@ -64,54 +57,39 @@ export default function Home() {
         </div>
       </motion.section>
 
-      <div className="h-32" />
-
       {/* WORK */}
-      <motion.section
-        id="work"
-        initial={{ opacity: 0, y: 80 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className="py-24 px-6 border-t border-white/10"
-      >
+      <Section>
         <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-8">
+
           <TiltCard
             title="PhotoBox"
-            desc="Event photo sharing system across devices."
+            desc="Event photo sharing system across devices"
             link="/work/photobox"
             live="https://photobox.shadowlab.online"
           />
 
           <TiltCard
             title="Arivu AI"
-            desc="AI assistant for structured student learning."
+            desc="AI assistant for structured student learning"
             link="/work/arivu"
             live="https://arivu.shadowlab.online"
           />
-        </div>
-      </motion.section>
 
-      <div className="h-32" />
+        </div>
+      </Section>
 
       {/* CONTACT */}
-      <motion.section
-        id="contact"
-        initial={{ opacity: 0, scale: 0.95 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.8 }}
-        className="py-24 px-6 border-t border-white/10 text-center"
-      >
-        <h2 className="text-2xl font-semibold mb-6">
+      <Section>
+        <h2 className="text-2xl font-[var(--font-space)] mb-6 text-center">
           Let’s build something useful
         </h2>
-
         <ContactForm />
-      </motion.section>
+      </Section>
 
       {/* FLOAT */}
       <a
         href="https://wa.me/917483698042"
-        className="fixed bottom-6 right-6 bg-white text-black px-5 py-3 rounded-full shadow-lg active:scale-90 transition"
+        className="fixed bottom-6 right-6 bg-white/90 text-black px-5 py-3 rounded-full shadow-lg active:scale-90 transition"
       >
         Chat
       </a>
@@ -119,78 +97,69 @@ export default function Home() {
   );
 }
 
-/* MAGNETIC BUTTON */
-function MagneticButton({ text }: { text: string }) {
-  const ref = useRef<HTMLButtonElement | null>(null);
-
-  function move(e: React.MouseEvent<HTMLButtonElement>) {
-    if (!ref.current) return;
-
-    const rect = ref.current.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
-
-    ref.current.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
-  }
-
+/* SECTION TRANSITION */
+function Section({ children }: any) {
   return (
-    <button
-      ref={ref}
-      onMouseMove={move}
-      onMouseLeave={() => {
-        if (ref.current) ref.current.style.transform = "translate(0,0)";
-      }}
-      className="bg-white text-black px-6 py-3 rounded-lg transition active:scale-95"
+    <motion.section
+      initial={{ opacity: 0, y: 80, filter: "blur(10px)" }}
+      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      transition={{ duration: 0.7 }}
+      viewport={{ once: true }}
+      className="py-28 px-6 border-t border-white/5"
     >
-      {text}
-    </button>
+      {children}
+    </motion.section>
   );
 }
 
-/* 3D CARD */
-function TiltCard({
-  title,
-  desc,
-  link,
-  live,
-}: {
-  title: string;
-  desc: string;
-  link: string;
-  live: string;
-}) {
+/* MOBILE + DESKTOP TILT */
+function TiltCard({ title, desc, link, live }: any) {
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
+
+  function handleMove(e: any) {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+    const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+
+    setTilt({
+      x: (y / rect.height - 0.5) * 10,
+      y: (x / rect.width - 0.5) * -10,
+    });
+  }
 
   return (
     <div
-      onMouseMove={(e) => {
-        const rect = e.currentTarget.getBoundingClientRect();
-        const x = (e.clientX - rect.left) / rect.width;
-        const y = (e.clientY - rect.top) / rect.height;
-
-        setTilt({
-          x: (y - 0.5) * 12,
-          y: (x - 0.5) * -12,
-        });
-      }}
+      onMouseMove={handleMove}
+      onTouchMove={handleMove}
       onMouseLeave={() => setTilt({ x: 0, y: 0 })}
+      onTouchEnd={() => setTilt({ x: 0, y: 0 })}
       style={{
         transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
       }}
-      className="p-6 rounded-xl border border-white/10 bg-white/[0.03] hover:border-white/30 transition active:scale-95"
+      className="p-6 rounded-xl border border-white/5 bg-white/[0.02] transition active:scale-95"
     >
-      <h3 className="font-semibold">{title}</h3>
-      <p className="text-gray-400 mt-2 text-sm">{desc}</p>
+      <h3 className="font-[var(--font-space)] text-white/90">{title}</h3>
 
-      <div className="mt-4 flex gap-4 text-sm">
-        <a href={link} className="underline">
-          Case Study
-        </a>
-        <a href={live} target="_blank">
-          Live →
-        </a>
+      <p className="text-white/40 mt-2 text-sm">{desc}</p>
+
+      <div className="mt-4 flex gap-4 text-sm text-white/60">
+        <a href={link} className="underline">Case Study</a>
+        <a href={live} target="_blank">Live →</a>
       </div>
     </div>
+  );
+}
+
+/* BUTTON */
+function MagneticButton({ text }: any) {
+  return (
+    <motion.button
+      whileTap={{ scale: 0.92 }}
+      whileHover={{ scale: 1.05 }}
+      className="bg-white/90 text-black px-6 py-3 rounded-lg"
+    >
+      {text}
+    </motion.button>
   );
 }
 
@@ -198,11 +167,11 @@ function TiltCard({
 function ContactForm() {
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: any) {
     e.preventDefault();
     setLoading(true);
 
-    const form = e.currentTarget;
+    const form = e.target;
     const data = new FormData(form);
 
     await fetch("/api/contact", {
@@ -220,14 +189,11 @@ function ContactForm() {
   }
 
   return (
-    <form
-      className="flex flex-col gap-4 max-w-md mx-auto"
-      onSubmit={handleSubmit}
-    >
-      <input name="name" placeholder="Name" className="p-3 bg-black border border-white/10 rounded" required />
-      <input name="email" type="email" placeholder="Email" className="p-3 bg-black border border-white/10 rounded" required />
-      <textarea name="message" placeholder="Project details..." className="p-3 bg-black border border-white/10 rounded" required />
-      <button className="bg-white text-black py-3 rounded active:scale-95">
+    <form className="flex flex-col gap-4 max-w-md mx-auto" onSubmit={handleSubmit}>
+      <input name="name" placeholder="Name" className="p-3 bg-black border border-white/5 rounded" required />
+      <input name="email" type="email" placeholder="Email" className="p-3 bg-black border border-white/5 rounded" required />
+      <textarea name="message" placeholder="Project details..." className="p-3 bg-black border border-white/5 rounded" required />
+      <button className="bg-white/90 text-black py-3 rounded active:scale-95">
         {loading ? "Sending..." : "Send"}
       </button>
     </form>
