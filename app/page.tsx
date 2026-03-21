@@ -222,7 +222,7 @@ function AnimatedLink({ href, children }: any) {
   );
 }
 
-/* ------------------ FORM ------------------ */
+/* ------------------ FORM -------------------- */
 function ContactForm() {
   const [loading, setLoading] = useState(false);
 
@@ -258,3 +258,5 @@ function ContactForm() {
     </form>
   );
 }
+
+
