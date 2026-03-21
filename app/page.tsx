@@ -1,152 +1,167 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
-/* TYPEWRITER */
-function TypeText({ text, delay = 0 }: { text: string; delay?: number }) {
-  const [displayed, setDisplayed] = useState("");
+/* FAST TYPE EFFECT (BURST STYLE) */
+function useFastType(text: string, speed = 10) {
+  const [display, setDisplay] = useState("");
 
   useEffect(() => {
     let i = 0;
-    const timeout = setTimeout(() => {
-      const interval = setInterval(() => {
-        setDisplayed(text.slice(0, i));
-        i++;
-        if (i > text.length) clearInterval(interval);
-      }, 15); // fast typing
-    }, delay);
+    const interval = setInterval(() => {
+      setDisplay(text.slice(0, i));
+      i++;
+      if (i > text.length) clearInterval(interval);
+    }, speed);
 
-    return () => clearTimeout(timeout);
-  }, [text, delay]);
+    return () => clearInterval(interval);
+  }, [text]);
+
+  return display;
+}
+
+/* PAGE */
+export default function Home() {
+  const title = useFastType(
+    "Systems that solve real-world problems",
+    8
+  );
+
+  const subtitle = useFastType(
+    "We design SaaS platforms, AI tools and automation systems that are actually used.",
+    6
+  );
 
   return (
-    <span>
-      {displayed}
-      <span className="animate-pulse">|</span>
-    </span>
+    <main className="bg-[#0b0b0c] text-[#e6e6e6] min-h-screen px-6">
+
+      {/* HERO */}
+      <section className="pt-40 pb-28 max-w-3xl mx-auto">
+
+        <ChatBlock delay={0}>
+          <h1 className="text-3xl md:text-5xl font-[var(--font-space)] leading-tight">
+            {title}
+          </h1>
+        </ChatBlock>
+
+        <ChatBlock delay={0.2}>
+          <p className="text-white/50 mt-6">
+            {subtitle}
+          </p>
+        </ChatBlock>
+
+        <ChatBlock delay={0.4}>
+          <div className="mt-8">
+            <button className="bg-white/90 text-black px-6 py-3 rounded-lg active:scale-95 transition">
+              Start Project
+            </button>
+          </div>
+        </ChatBlock>
+
+      </section>
+
+      {/* WORK */}
+      <section className="max-w-3xl mx-auto py-20 border-t border-white/5">
+
+        <ChatBlock delay={0}>
+          <p className="text-white/40 mb-6">Selected work:</p>
+        </ChatBlock>
+
+        <ChatBlock delay={0.2}>
+          <WorkItem
+            title="PhotoBox"
+            desc="Event photo sharing system across devices and platforms."
+            link="/work/photobox"
+          />
+        </ChatBlock>
+
+        <ChatBlock delay={0.4}>
+          <WorkItem
+            title="Arivu AI"
+            desc="AI assistant for students with structured learning output."
+            link="/work/arivu"
+          />
+        </ChatBlock>
+
+      </section>
+
+      {/* CONTACT */}
+      <section className="max-w-3xl mx-auto py-20 border-t border-white/5">
+
+        <ChatBlock>
+          <p className="text-white/50 mb-6">
+            Have an idea? Let’s build it.
+          </p>
+        </ChatBlock>
+
+        <ContactForm />
+
+      </section>
+
+    </main>
   );
 }
 
-/* BLOCK */
-function Block({ children, delay = 0 }: any) {
+/* CHAT BLOCK (FAST REVEAL) */
+function ChatBlock({ children, delay = 0 }: any) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
+      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
       transition={{ duration: 0.4, delay }}
-      className="mb-6"
     >
       {children}
     </motion.div>
   );
 }
 
-export default function Home() {
+/* WORK ITEM */
+function WorkItem({ title, desc, link }: any) {
   return (
-    <main className="min-h-screen bg-[#0b0b0c] text-[#e6e6e6] px-6 py-20 font-[var(--font-inter)]">
-
-      <div className="max-w-3xl mx-auto space-y-6">
-
-        {/* SYSTEM HEADER */}
-        <p className="text-white/30 text-sm">ShadowLab • System Response</p>
-
-        {/* HERO */}
-        <Block>
-          <h1 className="text-xl md:text-2xl font-[var(--font-space)] text-white/90">
-            <TypeText text="ShadowLab builds systems that solve real-world problems." />
-          </h1>
-        </Block>
-
-        {/* DESCRIPTION */}
-        <Block delay={0.5}>
-          <p className="text-white/50">
-            We design and build SaaS platforms, AI tools, and automation systems
-            that are actually used — not just demo projects.
-          </p>
-        </Block>
-
-        {/* SERVICES */}
-        <Block delay={1}>
-          <p className="text-white/70">→ Capabilities</p>
-
-          <ul className="mt-2 space-y-1 text-white/50">
-            <li>SaaS Product Development</li>
-            <li>AI Automation Systems</li>
-            <li>Custom Internal Tools</li>
-          </ul>
-        </Block>
-
-        {/* PRODUCTS */}
-        <Block delay={1.5}>
-          <p className="text-white/70">→ Products</p>
-
-          <div className="mt-3 space-y-4">
-
-            {/* PHOTOBOX */}
-            <div>
-              <p className="text-white/90 font-[var(--font-space)]">
-                PhotoBox
-              </p>
-              <p className="text-white/50 text-sm">
-                Event photo sharing system across devices and platforms.
-              </p>
-              <div className="text-sm mt-1 text-white/40">
-                <a href="/work/photobox" className="underline mr-4">Case Study</a>
-                <a href="https://photobox.shadowlab.online" target="_blank">Live →</a>
-              </div>
-            </div>
-
-            {/* ARIVU */}
-            <div>
-              <p className="text-white/90 font-[var(--font-space)]">
-                Arivu AI
-              </p>
-              <p className="text-white/50 text-sm">
-                AI assistant for students that delivers structured, curriculum-based responses.
-              </p>
-              <div className="text-sm mt-1 text-white/40">
-                <a href="/work/arivu" className="underline mr-4">Case Study</a>
-                <a href="https://arivu.shadowlab.online" target="_blank">Live →</a>
-              </div>
-            </div>
-
-          </div>
-        </Block>
-
-        {/* APPROACH */}
-        <Block delay={2}>
-          <p className="text-white/70">→ Approach</p>
-
-          <p className="text-white/50 mt-2">
-            Understand the problem → Design the system → Build scalable solution
-          </p>
-        </Block>
-
-        {/* CTA */}
-        <Block delay={2.5}>
-          <p className="text-white/70">→ Start a project</p>
-
-          <div className="mt-3">
-            <a
-              href="#"
-              className="inline-block bg-white/90 text-black px-5 py-2 rounded text-sm hover:scale-105 transition"
-            >
-              Contact ShadowLab
-            </a>
-          </div>
-        </Block>
-
-      </div>
-
-      {/* WHATSAPP */}
-      <a
-        href="https://wa.me/917483698042"
-        className="fixed bottom-6 right-6 bg-white/90 text-black px-5 py-3 rounded-full shadow-lg text-sm"
-      >
-        Chat
+    <div className="mb-6">
+      <h3 className="font-[var(--font-space)] text-white/90">{title}</h3>
+      <p className="text-white/40 text-sm mt-1">{desc}</p>
+      <a href={link} className="text-sm underline text-white/60">
+        View →
       </a>
+    </div>
+  );
+}
 
-    </main>
+/* CONTACT FORM */
+function ContactForm() {
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(e: any) {
+    e.preventDefault();
+    setLoading(true);
+
+    const form = e.target;
+    const data = new FormData(form);
+
+    await fetch("/api/contact", {
+      method: "POST",
+      body: JSON.stringify({
+        name: data.get("name"),
+        email: data.get("email"),
+        message: data.get("message"),
+      }),
+    });
+
+    alert("Message sent!");
+    form.reset();
+    setLoading(false);
+  }
+
+  return (
+    <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+      <input name="name" placeholder="Name" className="p-3 bg-black border border-white/5 rounded" required />
+      <input name="email" type="email" placeholder="Email" className="p-3 bg-black border border-white/5 rounded" required />
+      <textarea name="message" placeholder="Project details..." className="p-3 bg-black border border-white/5 rounded" required />
+      <button className="bg-white/90 text-black py-3 rounded active:scale-95">
+        {loading ? "Sending..." : "Send"}
+      </button>
+    </form>
   );
 }
