@@ -1,34 +1,45 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useState } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import Lenis from "lenis";
 
 export default function Home() {
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
 
+  /* SMOOTH SCROLL */
+  useEffect(() => {
+    const lenis = new Lenis({
+      smooth: true,
+      lerp: 0.08,
+    });
+
+    function raf(time: any) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+  }, []);
+
   return (
     <main
       onMouseMove={(e) => setMouse({ x: e.clientX, y: e.clientY })}
-      className="bg-[#0a0a0a] text-white min-h-screen overflow-x-hidden"
+      className="bg-[#0a0a0a] text-white min-h-screen"
     >
 
-      {/* AMBIENT GLOW */}
+      {/* CURSOR LIGHT */}
       <div
-        className="fixed inset-0 pointer-events-none"
+        className="fixed inset-0 pointer-events-none z-0"
         style={{
-          background: `radial-gradient(800px at ${mouse.x}px ${mouse.y}px, rgba(255,255,255,0.06), transparent 70%)`,
+          background: `radial-gradient(600px at ${mouse.x}px ${mouse.y}px, rgba(255,255,255,0.06), transparent 80%)`,
         }}
       />
-
-      {/* GRID */}
-      <div className="fixed inset-0 opacity-[0.05] pointer-events-none">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff10_1px,transparent_1px),linear-gradient(to_bottom,#ffffff10_1px,transparent_1px)] bg-[size:40px_40px]" />
-      </div>
 
       {/* NAVBAR */}
       <nav className="fixed w-full z-50 bg-black/60 backdrop-blur border-b border-white/10">
         <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between">
-          <h1 className="font-semibold">ShadowLab</h1>
+          <h1>ShadowLab</h1>
           <div className="hidden md:flex gap-8 text-sm text-gray-400">
             <a href="#work">Work</a>
             <a href="#contact">Contact</a>
@@ -38,31 +49,42 @@ export default function Home() {
 
       {/* HERO */}
       <section className="pt-44 pb-32 px-6 text-center">
-        <motion.h1
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-4xl md:text-6xl font-semibold"
-        >
-          Systems that feel <br /> intelligently built
-        </motion.h1>
+        <Reveal>
+          <h1 className="text-4xl md:text-6xl font-semibold">
+            Systems that feel alive
+          </h1>
+        </Reveal>
 
-        <p className="mt-6 text-gray-400 max-w-xl mx-auto">
-          We build SaaS, AI tools and automation systems with real-world usability.
-        </p>
+        <Reveal delay={0.2}>
+          <p className="mt-6 text-gray-400">
+            Every interaction should respond, not just exist.
+          </p>
+        </Reveal>
+
+        <Reveal delay={0.4}>
+          <div className="mt-8 flex justify-center gap-4">
+            <MagneticButton text="Start Project" />
+            <a href="#work" className="border border-white/20 px-6 py-3 rounded-lg">
+              View Work
+            </a>
+          </div>
+        </Reveal>
       </section>
 
-      {/* WORK (3D CARDS) */}
+      {/* WORK */}
       <section id="work" className="py-24 px-6 border-t border-white/10">
         <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-8">
 
-          <TiltCard title="PhotoBox"
-            desc="Event photo sharing system across devices and platforms."
+          <TiltCard
+            title="PhotoBox"
+            desc="Event photo sharing system"
             link="/work/photobox"
             live="https://photobox.shadowlab.online"
           />
 
-          <TiltCard title="Arivu AI"
-            desc="AI assistant for students with structured learning responses."
+          <TiltCard
+            title="Arivu AI"
+            desc="AI assistant for students"
             link="/work/arivu"
             live="https://arivu.shadowlab.online"
           />
@@ -72,16 +94,19 @@ export default function Home() {
 
       {/* CONTACT */}
       <section id="contact" className="py-24 px-6 border-t border-white/10 text-center">
-        <h2 className="text-2xl font-semibold mb-6">
-          Let’s build something useful
-        </h2>
+        <Reveal>
+          <h2 className="text-2xl font-semibold mb-6">
+            Let’s build something useful
+          </h2>
+        </Reveal>
+
         <ContactForm />
       </section>
 
-      {/* FLOAT BUTTON */}
+      {/* FLOAT */}
       <a
         href="https://wa.me/917483698042"
-        className="fixed bottom-6 right-6 bg-white text-black px-5 py-3 rounded-full shadow-lg hover:scale-110 transition"
+        className="fixed bottom-6 right-6 bg-white text-black px-5 py-3 rounded-full shadow-lg active:scale-90 transition"
       >
         Chat
       </a>
@@ -90,7 +115,49 @@ export default function Home() {
   );
 }
 
-/* 3D TILT CARD */
+/* REVEAL ANIMATION */
+function Reveal({ children, delay = 0 }: any) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 40, filter: "blur(10px)" }}
+      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      transition={{ duration: 0.6, delay }}
+      viewport={{ once: true }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+/* MAGNETIC BUTTON */
+function MagneticButton({ text }: any) {
+  const ref = useRef<any>();
+
+  function handleMove(e: any) {
+    const rect = ref.current.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+
+    ref.current.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+  }
+
+  function reset() {
+    ref.current.style.transform = `translate(0px, 0px)`;
+  }
+
+  return (
+    <button
+      ref={ref}
+      onMouseMove={handleMove}
+      onMouseLeave={reset}
+      className="bg-white text-black px-6 py-3 rounded-lg transition active:scale-95"
+    >
+      {text}
+    </button>
+  );
+}
+
+/* 3D CARD */
 function TiltCard({ title, desc, link, live }: any) {
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
 
@@ -102,18 +169,17 @@ function TiltCard({ title, desc, link, live }: any) {
         const y = (e.clientY - rect.top) / rect.height;
 
         setTilt({
-          x: (y - 0.5) * 10,
-          y: (x - 0.5) * -10,
+          x: (y - 0.5) * 12,
+          y: (x - 0.5) * -12,
         });
       }}
       onMouseLeave={() => setTilt({ x: 0, y: 0 })}
       style={{
         transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
       }}
-      className="p-6 rounded-xl border border-white/10 bg-white/[0.03] transition duration-300"
+      className="p-6 rounded-xl border border-white/10 bg-white/[0.03] hover:border-white/30 transition active:scale-95"
     >
-      <h3 className="font-semibold text-lg">{title}</h3>
-
+      <h3 className="font-semibold">{title}</h3>
       <p className="text-gray-400 mt-2 text-sm">{desc}</p>
 
       <div className="mt-4 flex gap-4 text-sm">
@@ -124,7 +190,7 @@ function TiltCard({ title, desc, link, live }: any) {
   );
 }
 
-/* CONTACT FORM */
+/* FORM */
 function ContactForm() {
   const [loading, setLoading] = useState(false);
 
@@ -154,7 +220,7 @@ function ContactForm() {
       <input name="name" placeholder="Name" className="p-3 bg-black border border-white/10 rounded" required />
       <input name="email" type="email" placeholder="Email" className="p-3 bg-black border border-white/10 rounded" required />
       <textarea name="message" placeholder="Project details..." className="p-3 bg-black border border-white/10 rounded" required />
-      <button className="bg-white text-black py-3 rounded">
+      <button className="bg-white text-black py-3 rounded active:scale-95">
         {loading ? "Sending..." : "Send"}
       </button>
     </form>
