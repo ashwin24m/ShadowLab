@@ -73,7 +73,7 @@ export default function ArivuCaseStudy() {
           </h2>
 
           <a
-            href="https://www.arivu.shadowlab.online"
+            href="https://arivu.shadowlab.online"
             target="_blank"
             className="bg-white text-black px-6 py-3 rounded-lg inline-block"
           >
