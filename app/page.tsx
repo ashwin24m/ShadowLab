@@ -31,19 +31,19 @@ export default function Home() {
               className="text-4xl md:text-6xl font-semibold leading-tight"
             >
               We Build Systems <br />
-              That Generate Revenue
+              That Solve Real Problems
             </motion.h1>
 
             <p className="mt-6 text-gray-400 max-w-lg">
-              ShadowLab designs and builds SaaS products, AI automation tools, 
-              and internal systems for businesses that want to scale efficiently.
+              ShadowLab builds SaaS platforms and AI systems focused on real-world usability —
+              not just demos.
             </p>
 
             <div className="mt-8 flex gap-4">
-              <a href="#contact" className="bg-white text-black px-6 py-3 rounded-lg hover:scale-105 transition">
+              <a href="#contact" className="bg-white text-black px-6 py-3 rounded-lg">
                 Start Project
               </a>
-              <a href="#work" className="border border-white/20 px-6 py-3 rounded-lg hover:bg-white hover:text-black transition">
+              <a href="#work" className="border border-white/20 px-6 py-3 rounded-lg">
                 View Work
               </a>
             </div>
@@ -54,12 +54,78 @@ export default function Home() {
         </div>
       </section>
 
-      {/* TRUST / POSITIONING */}
-      <section className="py-16 px-6 border-t border-white/10 text-center">
-        <p className="text-gray-400 max-w-3xl mx-auto">
-          We don’t build generic apps. We build systems designed to automate operations,
-          reduce cost, and generate measurable business value.
-        </p>
+      {/* WORK (UPDATED WITH REAL POSITIONING) */}
+      <section id="work" className="py-20 px-6 border-t border-white/10">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl font-semibold mb-12">Products & Systems</h2>
+
+          <div className="grid md:grid-cols-2 gap-6">
+
+            {/* PHOTOBOX */}
+            <div className="p-6 border border-white/10 rounded-xl hover:border-white/30 transition">
+              <h3 className="text-xl font-semibold">PhotoBox</h3>
+
+              <p className="text-gray-400 mt-3 text-sm">
+                Event-based photo sharing system that solves the problem of distributing
+                photos across different devices, platforms, and formats.
+              </p>
+
+              <ul className="text-gray-400 text-sm mt-4 space-y-1">
+                <li>• Centralized photo access for events</li>
+                <li>• Works across devices & platforms</li>
+                <li>• Eliminates manual sharing via WhatsApp/Drive</li>
+              </ul>
+
+              <div className="mt-6 flex gap-4">
+                <a
+                  href="https://photobox.shadowlab.online"
+                  target="_blank"
+                  className="text-sm underline"
+                >
+                  Visit Product
+                </a>
+
+                <a
+                  href="/work/photobox"
+                  className="text-sm text-gray-400 hover:text-white"
+                >
+                  View Case Study
+                </a>
+              </div>
+            </div>
+
+            {/* ARIVU AI */}
+            <div className="p-6 border border-white/10 rounded-xl hover:border-white/30 transition">
+              <h3 className="text-xl font-semibold">Arivu AI</h3>
+
+              <p className="text-gray-400 mt-3 text-sm">
+                AI learning assistant designed for students who struggle with prompts.
+                Provides structured answers based on academic level.
+              </p>
+
+              <ul className="text-gray-400 text-sm mt-4 space-y-1">
+                <li>• Curriculum-based AI responses</li>
+                <li>• Designed for school → college levels</li>
+                <li>• Eliminates confusion in AI usage</li>
+              </ul>
+
+              <div className="mt-6 flex gap-4">
+                <a
+                  href="https://arivu.shadowlab.online"
+                  target="_blank"
+                  className="text-sm underline"
+                >
+                  Visit Product
+                </a>
+
+                <span className="text-sm text-gray-500">
+                  Case study coming soon
+                </span>
+              </div>
+            </div>
+
+          </div>
+        </div>
       </section>
 
       {/* SERVICES */}
@@ -69,64 +135,14 @@ export default function Home() {
 
           <div className="grid md:grid-cols-3 gap-6">
             {[
-              {
-                title: "SaaS Development",
-                desc: "End-to-end product development from idea to deployment."
-              },
-              {
-                title: "AI Automation",
-                desc: "Automate workflows using AI to reduce manual work."
-              },
-              {
-                title: "Internal Tools",
-                desc: "Custom dashboards and systems for business operations."
-              }
+              "SaaS Development",
+              "AI Automation",
+              "Custom Internal Tools"
             ].map((s) => (
-              <div key={s.title} className="p-6 border border-white/10 rounded-xl hover:border-white/30 transition">
-                <h3 className="font-medium">{s.title}</h3>
-                <p className="text-gray-400 text-sm mt-2">{s.desc}</p>
+              <div key={s} className="p-6 border border-white/10 rounded-xl">
+                {s}
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* WORK */}
-      <section id="work" className="py-20 px-6 border-t border-white/10">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-semibold mb-12">Selected Work</h2>
-
-          <div className="grid md:grid-cols-2 gap-6">
-
-            <a href="/work/photobox">
-              <div className="p-6 border border-white/10 rounded-xl hover:border-white/30 transition">
-                <h3 className="text-xl font-semibold">PhotoBox</h3>
-                <p className="text-gray-400 mt-2">
-                  Automated image processing SaaS
-                </p>
-              </div>
-            </a>
-
-            <div className="p-6 border border-white/10 rounded-xl">
-              <h3 className="text-xl font-semibold">Arivu AI</h3>
-              <p className="text-gray-400 mt-2">
-                AI automation system
-              </p>
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* WHY CHOOSE US */}
-      <section className="py-20 px-6 border-t border-white/10">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-3xl font-semibold mb-12">Why ShadowLab</h2>
-
-          <div className="grid md:grid-cols-3 gap-6 text-gray-400 text-sm">
-            <div>Built for real-world usage, not demos</div>
-            <div>Focus on automation and scalability</div>
-            <div>Fast execution with clean architecture</div>
           </div>
         </div>
       </section>
@@ -138,29 +154,29 @@ export default function Home() {
 
           <div className="grid md:grid-cols-3 gap-6">
 
-            {[
-              {
-                title: "Starter",
-                price: "₹25K+",
-                desc: "Simple tools or MVP builds"
-              },
-              {
-                title: "Growth",
-                price: "₹50K–₹1L",
-                desc: "Full SaaS or automation systems"
-              },
-              {
-                title: "Advanced",
-                price: "₹1L+",
-                desc: "Complex platforms and AI systems"
-              }
-            ].map((p) => (
-              <div key={p.title} className="p-6 border border-white/10 rounded-xl hover:border-white/30 transition">
-                <h3 className="font-medium">{p.title}</h3>
-                <p className="text-2xl mt-2">{p.price}</p>
-                <p className="text-gray-400 text-sm mt-2">{p.desc}</p>
-              </div>
-            ))}
+            <div className="p-6 border border-white/10 rounded-xl">
+              <h3>Starter</h3>
+              <p className="text-2xl mt-2">₹25K+</p>
+              <p className="text-gray-400 text-sm mt-2">
+                MVPs and small tools
+              </p>
+            </div>
+
+            <div className="p-6 border border-white/10 rounded-xl">
+              <h3>Growth</h3>
+              <p className="text-2xl mt-2">₹50K–₹1L</p>
+              <p className="text-gray-400 text-sm mt-2">
+                Full SaaS / automation systems
+              </p>
+            </div>
+
+            <div className="p-6 border border-white/10 rounded-xl">
+              <h3>Advanced</h3>
+              <p className="text-2xl mt-2">₹1L+</p>
+              <p className="text-gray-400 text-sm mt-2">
+                Complex AI platforms
+              </p>
+            </div>
 
           </div>
         </div>
@@ -169,7 +185,7 @@ export default function Home() {
       {/* CONTACT */}
       <section id="contact" className="py-20 px-6 border-t border-white/10 text-center">
         <h2 className="text-3xl font-semibold mb-6">
-          Let’s Build Something Valuable
+          Let’s Build Something Useful
         </h2>
 
         <ContactForm />
@@ -178,7 +194,7 @@ export default function Home() {
       {/* WHATSAPP */}
       <a
         href="https://wa.me/917483698042"
-        className="fixed bottom-6 right-6 bg-white text-black px-5 py-3 rounded-full shadow-lg hover:scale-110 transition"
+        className="fixed bottom-6 right-6 bg-white text-black px-5 py-3 rounded-full shadow-lg"
       >
         Chat
       </a>
@@ -190,11 +206,10 @@ export default function Home() {
 /* INTERACTIVE PANEL */
 function InteractivePanel() {
   const steps = [
-    "Analyzing problem...",
-    "Designing system...",
-    "Executing logic...",
-    "Generating output...",
-    "Done"
+    "Understanding problem...",
+    "Designing solution...",
+    "Building system...",
+    "Delivering output..."
   ];
 
   const [i, setI] = useState(0);
