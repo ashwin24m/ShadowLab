@@ -47,7 +47,7 @@ export default function Home() {
 
         <p className={`${styles.body} mt-6 max-w-xl mx-auto`}>
           We design and build SaaS platforms, AI tools and automation systems
-          that are actually used — not just demos.
+          that are actually used - not just demos.
         </p>
 
         <div className="mt-10 flex justify-center gap-4">
